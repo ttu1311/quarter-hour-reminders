@@ -1,0 +1,238 @@
+:root {
+  --bg: #fdf6ec;
+  --bg-glow: #ffe3c2;
+  --card: #ffffff;
+  --text: #2a2438;
+  --muted: #6e6682;
+  --line: #eadfce;
+  --accent: #e8590c;
+  --accent-text: #ffffff;
+  --butterflies: #7048e8;
+  --shadow: 0 10px 40px rgba(80, 50, 20, 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17131f;
+    --bg-glow: #2b1f3d;
+    --card: #221c2e;
+    --text: #f4eefc;
+    --muted: #a99fc0;
+    --line: #382f49;
+    --accent: #ff8a4c;
+    --accent-text: #1c1426;
+    --butterflies: #a98bff;
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: radial-gradient(1200px 600px at 50% -10%, var(--bg-glow), var(--bg));
+  background-color: var(--bg);
+}
+
+/* The widget lives in the top-right corner of the page (or fills the pop-out window). */
+.dock {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: min(320px, calc(100vw - 32px));
+  z-index: 5;
+}
+body.popped .dock { top: 8px; right: 8px; width: calc(100vw - 16px); }
+body.popped { overflow: hidden; }
+
+.card {
+  padding: 14px 14px 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+body.popped .card { box-shadow: none; }
+
+.label {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.clock {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.date { margin: 0; font-size: 0.8rem; color: var(--muted); text-align: right; }
+
+.next {
+  margin-top: 10px;
+  padding: 10px 12px 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 9%, var(--card));
+  border: 1px solid var(--line);
+}
+
+.countdown {
+  margin: 2px 0 8px;
+  font-size: 2.3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.countdown.paused { color: var(--muted); }
+
+.bar { height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 99px;
+  background: var(--accent);
+  transition: width 0.4s linear;
+}
+
+.next-info { margin: 8px 0 0; font-size: 0.85rem; }
+
+.controls { display: flex; gap: 8px; margin: 12px 0 6px; }
+
+.btn {
+  flex: 1;
+  min-height: 40px;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+  background: transparent;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.btn:hover:not(:disabled) { transform: translateY(-1px); }
+.btn:active:not(:disabled) { transform: translateY(0); }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn:focus-visible, .link:focus-visible, summary:focus-visible { outline: 3px solid var(--butterflies); outline-offset: 2px; }
+
+.status { min-height: 1.3em; margin: 0 0 6px; font-size: 0.8rem; color: var(--muted); }
+
+.schedule { text-align: left; border-top: 1px solid var(--line); padding-top: 8px; }
+.schedule summary { cursor: pointer; }
+.upcoming { list-style: none; margin: 6px 0 0; padding: 0; }
+.upcoming li {
+  display: flex;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+.upcoming .when { min-width: 5em; font-weight: 700; font-variant-numeric: tabular-nums; }
+.legend { margin: 8px 0 2px; font-size: 0.75rem; color: var(--muted); }
+.link {
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.hint {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  right: 16px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ---------- alerts: centred in the viewport ---------- */
+
+.toasts {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  pointer-events: none;
+}
+.toasts:not(:empty) {
+  pointer-events: auto;
+  background: rgba(10, 6, 20, 0.5);
+  animation: fade-in 0.25s ease-out;
+}
+
+.toast {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 460px);
+  padding: 28px 24px 30px;
+  overflow: hidden;
+  color: #fff;
+  text-align: center;
+  border-radius: 24px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  animation: pop-in 0.5s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.toast.race { background: linear-gradient(135deg, #e8590c, #f08c00); }
+.toast.butterflies { background: linear-gradient(135deg, #7048e8, #cc5de8); }
+.toast-emoji { font-size: clamp(3rem, 14vw, 4.5rem); line-height: 1; }
+.toast-text { font-size: clamp(1.5rem, 6vw, 2.2rem); font-weight: 800; line-height: 1.2; }
+.toast-hint { font-size: 0.8rem; opacity: 0.8; }
+.toast-timer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 6px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  transform-origin: left;
+  animation: drain linear forwards;
+}
+.toast.leaving { animation: pop-out 0.35s ease-in forwards; }
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes drain { to { transform: scaleX(0); } }
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pop-out {
+  to { opacity: 0; transform: scale(0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast, .toast.leaving, .toasts:not(:empty) { animation-duration: 0.01s; }
+  .bar-fill, .btn { transition: none; }
+}
+
+/* Inside the Electron app the OS window is the widget: no pop-out, no tab hint. */
+body.electron #popout, body.electron .hint { display: none; }
+body.electron .dock { top: 8px; right: 8px; width: calc(100vw - 16px); }
+body.electron .card { box-shadow: none; }

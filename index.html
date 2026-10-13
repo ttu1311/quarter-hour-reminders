@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Quarter-Hour Reminders</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="dock" class="dock">
+      <main class="card">
+        <header class="head">
+          <h1 id="clock" class="clock" aria-label="Current time">--:--:--</h1>
+          <p id="date" class="date">&nbsp;</p>
+        </header>
+
+        <section class="next" aria-labelledby="next-label">
+          <p id="next-label" class="label">Next reminder in</p>
+          <p id="countdown" class="countdown" role="timer" aria-live="off">--:--</p>
+          <div class="bar" aria-hidden="true"><div id="bar-fill" class="bar-fill"></div></div>
+          <p id="next-info" class="next-info">&nbsp;</p>
+        </section>
+
+        <div class="controls">
+          <button id="start" class="btn primary" type="button">Start</button>
+          <button id="stop" class="btn" type="button">Stop</button>
+          <button id="popout" class="btn" type="button" title="Float this widget above your other windows">Pop out</button>
+        </div>
+        <p id="status" class="status" role="status"></p>
+
+        <details class="schedule">
+          <summary class="label">Coming up</summary>
+          <ul id="upcoming" class="upcoming"></ul>
+          <p class="legend">:00 &amp; :30 &rarr; race &middot; :15 &amp; :45 &rarr; butterflies</p>
+          <button id="preview" class="link" type="button">Preview a reminder</button>
+        </details>
+      </main>
+
+      <div id="toasts" class="toasts" role="status" aria-live="polite" aria-atomic="false"></div>
+    </div>
+
+    <p id="hint" class="hint"></p>
+
+    <script src="schedule.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'" />
+    <title>Reminder</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+      body {
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        font-family: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .alert {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 24px;
+        overflow: hidden;
+        color: #fff;
+        text-align: center;
+        border-radius: 28px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        animation: pop-in 0.5s cubic-bezier(0.2, 1.4, 0.4, 1);
+      }
+      .alert.race { background: linear-gradient(135deg, #e8590c, #f08c00); }
+      .alert.butterflies { background: linear-gradient(135deg, #7048e8, #cc5de8); }
+      .emoji { font-size: 5rem; line-height: 1; }
+      .text { font-size: 2.3rem; font-weight: 800; line-height: 1.15; }
+      .hint { font-size: 0.85rem; opacity: 0.8; }
+      .timer {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 7px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.85);
+        transform-origin: left;
+        animation: drain linear forwards;
+      }
+      @keyframes drain { to { transform: scaleX(0); } }
+      @keyframes pop-in { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
+      @media (prefers-reduced-motion: reduce) { .alert { animation-duration: 0.01s; } }
+    </style>
+  </head>
+  <body>
+    <div id="alert" class="alert" role="alert">
+      <div id="emoji" class="emoji" aria-hidden="true"></div>
+      <div id="text" class="text"></div>
+      <div class="hint">Click to dismiss</div>
+      <div id="timer" class="timer"></div>
+    </div>
+    <script>
+      var p = new URLSearchParams(location.search);
+      var kind = p.get("kind") === "butterflies" ? "butterflies" : "race";
+      var ms = Math.min(Math.max(parseInt(p.get("ms"), 10) || 8000, 1000), 60000);
+      document.getElementById("alert").classList.add(kind);
+      document.getElementById("emoji").textContent = p.get("emoji") || "";
+      document.getElementById("text").textContent = p.get("text") || "";
+      document.getElementById("timer").style.animationDuration = ms + "ms";
+      document.addEventListener("click", function () { window.close(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") window.close(); });
+      setTimeout(function () { window.close(); }, ms);
+    </script>
+  </body>
+</html>
